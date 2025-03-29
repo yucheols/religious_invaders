@@ -27,6 +27,10 @@ if(!dir.exists('data/envs')){
   dir.create('data/envs')
 }
 
+if(!dir.exists('data/envs/global')){
+  dir.create('data/envs/global')
+}
+
 # directory for model outputs
 if(!dir.exists('outputs')){
   dir.create('outputs')
