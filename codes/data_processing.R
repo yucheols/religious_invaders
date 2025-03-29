@@ -34,3 +34,5 @@ ClimDatDownloadR::Chelsa.Clim.download(save.location = 'data/envs/global/', para
 # grab occurrence points for Europe (native) and North America (non-native) separately
 
 # spatially thin occurrence points
+
+#

@@ -1,4 +1,4 @@
-#####  create directory structure
+#####  create directory structure for various files
 
 # clean the working environment
 rm(list = ls(all.names = T))
