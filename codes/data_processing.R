@@ -30,9 +30,12 @@ ClimDatDownloadR::Chelsa.Clim.download(save.location = 'data/envs/global/', para
 # acquire global human population data, considering M.religiosa have been moved around the world due to human activities  
 
 
-#####  part 2 ::: process acquired data ----------
+#####  part 2 ::: process occurrence data ----------
 # grab occurrence points for Europe (native) and North America (non-native) separately
 
 # spatially thin occurrence points
 
-#
+# 
+
+
+#####  part 3 ::: process environmental data ----------
