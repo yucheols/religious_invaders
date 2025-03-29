@@ -23,6 +23,10 @@ if(!dir.exists('data/occs')){
   dir.create('data/occs')
 }
 
+if(!dir.exists('data/poly')){
+  dir.create('data/poly')
+}
+
 if(!dir.exists('data/envs')){
   dir.create('data/envs')
 }

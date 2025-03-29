@@ -49,3 +49,8 @@ po/*~
 rsconnect/
 
 data/envs/global/bio
+data/envs/global/land
+data/envs/global/elev
+data/envs/global/human_footprint
+
+

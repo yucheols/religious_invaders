@@ -4,7 +4,9 @@
 - R (v 4.4.2)
 - geodata
 - ClimDatDownloadR
+- rnaturalearth
 - terra
+- sf
 
 ## Study background
 
