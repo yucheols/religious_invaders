@@ -7,6 +7,8 @@
 - rnaturalearth
 - terra
 - sf
+- foster
+- dplyr
 
 ## Study background
 

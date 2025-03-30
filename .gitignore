@@ -52,5 +52,7 @@ data/envs/global/bio
 data/envs/global/land
 data/envs/global/elev
 data/envs/global/human_footprint
-
+#data/envs/global/allvars_global_processed
+#data/envs/europe/
+#data/envs/north_america
 
