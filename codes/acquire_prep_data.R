@@ -284,6 +284,25 @@ write.csv(glob.bg, 'data/bg/global_20000.csv')
 write.csv(eu.bg, 'data/bg/europe_20000.csv')
 write.csv(na.bg, 'data/bg/north_america_20000.csv')
 
+# for global scale background sampling, try kernel density based sampling // bc buffer based sampling results in a small number of bg points due to pixel availability
+glob.kd <- biaslayer(occs_df = glob.occs.thin, longitude = 'long', latitude = 'lat', raster_mold = raster::raster(allvars_glob[[1]]))
+plot(glob.kd)
+
+# sample 20000 global bg points based on kd raster
+glob.bg2 <- raster::xyFromCell(object = glob.kd, 
+                               sample(which(!is.na(values(subset(x = allvars_glob[[1]], 1)))), 
+                                                          size = 20000, prob = values(x = glob.kd)[!is.na(values(subset(x = allvars_glob[[1]], 1)))])) %>% as.data.frame()
+
+colnames(glob.bg2) = c('long', 'lat')
+head(glob.bg2)
+
+# plot across the landscape
+plot(allvars_glob[['elev']])
+points(glob.bg2, col = 'green')
+
+# export
+write.csv(glob.bg2, 'data/bg/global_20000_kd.csv')
+
 
 #####  part 5 ::: select environmental variables
 # get some random points

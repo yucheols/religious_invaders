@@ -13,6 +13,10 @@
 - ENMwrap
 - dismo
 - ntbox
+- blockCV
+- ggplot2
+- ggpubr
+- tidyterra
 
 ## Study background
 
