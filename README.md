@@ -9,6 +9,7 @@
 - sf
 - foster
 - dplyr
+- SDMtune
 
 ## Study background
 
