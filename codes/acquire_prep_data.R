@@ -14,6 +14,8 @@ library(foster)
 library(dplyr)
 library(SDMtune)
 library(ENMwrap)
+library(dismo)
+library(ntbox)
 
 # check loaded packages
 sessionInfo()
@@ -262,3 +264,68 @@ plot(buf[[3]], add = T, lwd = 3)
 st_write(buf[[1]], 'data/poly/buffers/global/global_300km.shp')
 st_write(buf[[2]], 'data/poly/buffers/europe/europe_300km.shp')
 st_write(buf[[3]], 'data/poly/buffers/north_america/north_america_300km.shp')
+
+# sample 20000 background points
+glob.bg <- as.data.frame(dismo::randomPoints(mask = raster::mask(raster(allvars_glob[[1]]), buf[[1]]), n = 20000)) 
+eu.bg <- as.data.frame(dismo::randomPoints(mask = raster::mask(raster(allvars_eu[[1]]), buf[[2]]), n = 20000))
+na.bg <- as.data.frame(dismo::randomPoints(mask = raster::mask(raster(allvars_na[[1]]), buf[[3]]), n = 20000))
+
+head(glob.bg)
+head(eu.bg)
+head(na.bg)
+
+# rename columns
+colnames(glob.bg) = c('long', 'lat')
+colnames(eu.bg) = c('long', 'lat')
+colnames(na.bg) = c('long', 'lat')
+
+# export
+write.csv(glob.bg, 'data/bg/global_20000.csv')
+write.csv(eu.bg, 'data/bg/europe_20000.csv')
+write.csv(na.bg, 'data/bg/north_america_20000.csv')
+
+
+#####  part 5 ::: select environmental variables
+# get some random points
+rand.pts <- as.data.frame(dismo::randomPoints(mask = raster::raster(allvars_glob[[1]]), n = 100000))
+plot(allvars_glob[['elev']])
+points(rand.pts)
+
+colnames(rand.pts) = c('long', 'lat')
+write.csv(rand.pts, 'outputs/other/randomPts_100000.csv')
+
+# generate correlation matrix
+glob.env.val <- terra::extract(allvars_glob, rand.pts)
+glob.env.val$ID <- NULL
+glob.env.val <- na.omit(glob.env.val)
+
+cor.mat <- cor(glob.env.val)
+print(cor.mat)
+
+# select low collinearity variables == c('bio1', 'bio2', 'bio12', 'bio15', 'built', 'cropland', 'elev', 'grassland', 'human_footprint', 'shrubs', 'trees')
+correlation_finder(cor_mat = cor.mat, threshold = 0.7)
+
+# subset variables
+allvars_glob_subs <- allvars_glob[[c('bio1', 'bio2', 'bio12', 'bio15', 'built', 'cropland', 'elev', 'grassland', 'human_footprint', 'shrubs', 'trees')]]
+allvars_eu_subs <- allvars_eu[[c('bio1', 'bio2', 'bio12', 'bio15', 'built', 'cropland', 'elev', 'grassland', 'human_footprint', 'shrubs', 'trees')]]
+allvars_na_subs <- allvars_na[[c('bio1', 'bio2', 'bio12', 'bio15', 'built', 'cropland', 'elev', 'grassland', 'human_footprint', 'shrubs', 'trees')]]
+
+plot(allvars_glob_subs[[1]])
+plot(allvars_eu_subs[[1]])
+plot(allvars_na_subs[[1]])
+
+# export subsets
+# global
+for (i in 1:nlyr(allvars_glob_subs)) {
+  writeRaster(allvars_glob_subs[[i]], paste0('data/envs/subset/global/', names(allvars_glob_subs)[i], '.tif'), overwrite = T)
+}
+
+# europe
+for (i in 1:nlyr(allvars_eu_subs)) {
+  writeRaster(allvars_eu_subs[[i]], paste0('data/envs/subset/europe/', names(allvars_eu_subs)[i], '.tif'), overwrite = T)
+}
+
+# north america
+for (i in 1:nlyr(allvars_na_subs)) {
+  writeRaster(allvars_na_subs[[i]], paste0('data/envs/subset/north_america/', names(allvars_na_subs)[i], '.tif'), overwrite = T)
+}

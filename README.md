@@ -10,6 +10,9 @@
 - foster
 - dplyr
 - SDMtune
+- ENMwrap
+- dismo
+- ntbox
 
 ## Study background
 
