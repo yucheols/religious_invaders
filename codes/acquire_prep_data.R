@@ -166,11 +166,11 @@ for (i in 1:nlyr(allvars_na)) {
 
 ### global occurrence data
 # load data and get relevant columns
-glob.occs <- read.csv('data/occs/occs_GBIF_raw_20250328.csv') %>% dplyr::select('lon', 'lat', 'continent')
+glob.occs <- read.csv('data/occs/occs_GBIF_raw_20250328.csv') %>% dplyr::select('lon', 'lat', 'continent', 'year')
 glob.occs$species = 'Mantis religiosa'
-glob.occs <- glob.occs[, c(4,1,2,3)]
+glob.occs <- glob.occs[, c(5,1,2,3,4)]
 
-colnames(glob.occs) = c('species', 'long', 'lat', 'continent')
+colnames(glob.occs) = c('species', 'long', 'lat', 'continent', 'year')
 head(glob.occs)
 
 # export raw global occs
