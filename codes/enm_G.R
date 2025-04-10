@@ -73,7 +73,7 @@ evalplot.grps(pts = glob.occs.narm, pts.grp = ckb2$occs.grp, envs = glob.envs)
 evalplot.grps(pts = glob.bg.narm, pts.grp = ckb2$bg.grp, envs = glob.envs)
 
 
-#####  part 3 ::: run models at 5km spatial resolution ----------
+#####  part 3 ::: run models at 20km spatial resolution ----------
 # format data for SDMtune
 glob.swd <- prepareSWD(species = 'Mantis religiosa_Global', env = glob.envs, p = glob.occs.narm, a = glob.bg.narm, verbose = T)
 print(glob.swd)
