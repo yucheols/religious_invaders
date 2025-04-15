@@ -12,3 +12,4 @@ library(tidyterra)
 #####  religiosa North America complete data
 # North America prediction
 
+

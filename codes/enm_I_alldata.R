@@ -1,4 +1,4 @@
-#####  ENM for M. religiosa == model at 5km scale 
+#####  ENM for M. religiosa calibrated on North America using all available data == model at 5km scale 
 
 # clean the working environment
 rm(list = ls(all.names = T))
@@ -113,6 +113,7 @@ i.opt.pred <- eval.predictions(i.opt.mod)
 plot(i.opt.pred)
 
 # export prediction
+writeRaster(i.opt.pred, 'outputs/preds/north_america_alldata.tif', overwrite = T)
 
 
 #####  part 4 ::: model evaluation against null models ---------- 
@@ -128,3 +129,4 @@ glob.pred <- predicts::predict(object = i.opt.mod@models$rm.3_fc.LQ, x = glob.en
 plot(glob.pred)
 
 # export prediction
+writeRaster(glob.pred, 'outputs/preds/north_america_alldata_to_global.tif')
