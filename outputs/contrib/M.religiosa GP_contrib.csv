@@ -1,0 +1,12 @@
+"","variable","percent.contribution","permutation.importance"
+"1","bio1",5e-04,0
+"2","bio12",0,0
+"3","bio15",10.873,13.2342
+"4","bio2",10.9732,15.1639
+"5","built",0.2922,0
+"6","cropland",0.0327,0
+"7","elev",0.0116,0.3081
+"8","grassland",2.9372,1.0518
+"9","human_footprint",62.0274,57.0284
+"10","shrubs",3.4779,10.3982
+"11","trees",9.3743,2.8154

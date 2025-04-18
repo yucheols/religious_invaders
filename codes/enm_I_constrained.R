@@ -110,10 +110,16 @@ w.user.grp <- list(occs.grp = as.vector(w.occs.folds)$fold_id,
 # combine all
 user.grp <- list(e.user.grps, gp.user.grp, w.user.grp)
 
+# export folds
+saveRDS(user.grp, 'outputs/folds/north_america_ecoregion_folds.rds')
+
 
 #####  part 5 ::: run models ----------
+# define taxon list
+taxon.list <- list('M.religiosa East', 'M.religiosa GP', 'M.religiosa W')
+
 # run models
-na_mods <- test_multisp(taxon.list = list('M.religiosa East', 'M.religiosa GP', 'M.religiosa W'),
+na_mods <- test_multisp(taxon.list = taxon.list,
                         occs.list = occs.narm,
                         envs = i.envs,
                         bg = bg.narm,
@@ -122,3 +128,49 @@ na_mods <- test_multisp(taxon.list = list('M.religiosa East', 'M.religiosa GP', 
                         partitions = 'user',
                         user.grp = user.grp,
                         type = 'type1')
+
+# look at the selected optimal models
+print(na_mods$metrics)
+
+# look at variable contributions
+print(na_mods$contrib[[1]])  # east
+print(na_mods$contrib[[2]])  # great plains
+print(na_mods$contrib[[3]])  # west
+
+# look at predictions
+plot(na_mods$preds[[1]])  # east
+plot(na_mods$preds[[2]])  # great plains
+plot(na_mods$preds[[3]])  # west
+
+# export tuning object
+saveRDS(na_mods, 'outputs/models/north_america_ecoreion_tuning.rds')
+
+# export metrics
+write.csv(na_mods$metrics, 'outputs/metrics/ecoregion_models_metrics.csv')
+
+# export contribution
+for (i in 1:length(na_mods$contrib)) {
+  write.csv(na_mods$contrib[[i]], paste0('outputs/contrib/', taxon.list[[i]], '_contrib.csv'))
+}
+
+# export prediction
+for (i in 1:nlayers(na_mods$preds)) {
+  raster::writeRaster(na_mods$preds[[i]], paste0('outputs/preds/', taxon.list[[i]], '_preds.tif'), overwrite = T)
+}
+
+
+#####  part 6 ::: plot response curves ----------
+# pull response curve data
+resp_data <- list()
+
+for (i in 1:length(taxon.list)) {
+  pull_data <- resp_data_pull(sp.name = taxon.list[[i]], model = na_mods$models[[i]], names.var = names(i.envs))
+  resp_data[[i]] <- pull_data
+}
+
+# export response data
+for (i in 1:length(resp_data)) {
+  write.csv(resp_data[[i]], paste0('outputs/resp_data/', taxon.list[[i]], '_resp_data.csv'))
+}
+
+# plot curves
