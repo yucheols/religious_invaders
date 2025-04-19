@@ -174,3 +174,23 @@ for (i in 1:length(resp_data)) {
 }
 
 # plot curves
+
+
+
+#####  part 7 ::: global prediction ----------
+# global data
+glob.envs <- raster::stack(list.files(path = 'data/envs/subset/global/', pattern = '.tif$', full.names = T))
+names(glob.envs) != names(i.envs)
+
+# make predictions
+glob.pred <- model_predictr(model = na_mods$models, preds.list = glob.envs, pred.names = c('East', 'Great Plains', 'West'), method = 'multi2single')
+print(glob.pred)
+
+plot(glob.pred[[1]])
+plot(glob.pred[[2]])
+plot(glob.pred[[3]])
+
+# export predictions
+for (i in 1:nlayers(glob.pred)) {
+  raster::writeRaster(glob.pred[[i]], paste0('outputs/preds/', taxon.list[[i]], '_proj2Glob.tif'), overwrite = T)
+}
