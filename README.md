@@ -2,21 +2,24 @@
 
 ## Software and package dependencies
 - R (v 4.4.2)
-- geodata
-- ClimDatDownloadR
-- rnaturalearth
-- terra
-- sf
-- foster
-- dplyr
-- SDMtune
-- ENMwrap
-- dismo
-- ntbox
 - blockCV
+- ClimDatDownloadR
+- dismo
+- dplyr
+- ENMTools
+- ENMwrap
+- factoextra
+- foster
+- geodata
 - ggplot2
 - ggpubr
+- ntbox
+- rnaturalearth
+- SDMtune
+- sf
+- terra
 - tidyterra
+
 
 ## Study background
 
