@@ -34,9 +34,9 @@ fetch_genbank <- function (seq_acc, out.dir) {
 
 #####  load data
 # load data
-seq_data <- read.csv('data/COI_seq/Shin_Song_2024_suppl.csv')
+seq_data <- read.csv('data/COI_seq/Shim_Song_2024_suppl.csv')
 head(seq_data)
 
 # run!
 fetch_genbank(seq_acc = data.frame(COI = seq_data[, c('COI')]), out.dir = 'data/COI_seq/')
-#fetch_genbank(seq_acc = seq_data %>% dplyr::select('COI'), out.dir = 'data/COI_seq/') 
+#fetch_genbank(seq_acc = seq_data %>% dplyr::select('COI'), out.dir = 'data/COI_seq/')     # same thing but using dplyr
