@@ -1,7 +1,10 @@
 # religious_invaders
 
-## Software and package dependencies
-- R (v 4.4.2)
+## Computing resources
+Mendel HPC at AMNH
+
+## Software and package dependencies for local runs
+- R (v 4.4.2) for local runs
 - blockCV
 - ClimDatDownloadR
 - dismo
@@ -20,6 +23,8 @@
 - terra
 - tidyterra
 
+## Software and package dependencies for HPC runs
+R (v 4.3.3)
 
 ## Study background
 
