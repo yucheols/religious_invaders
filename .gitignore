@@ -60,6 +60,8 @@ data/envs/global/human_footprint
 #data/envs/north_america
 codes/test_scripts/
 Results/
+hpc_test_loc/
+maxent.jar
 
 data/COI_seq
 
