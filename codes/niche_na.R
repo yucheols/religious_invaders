@@ -169,10 +169,10 @@ gp.enmtools <- enmtools.species(species.name = 'religiosa_GP',
                                 background.points = vect(gp.rand, geom = c('long', 'lat'), crs = 'EPSG:4326'))
 
 # West
-w.enmtools <- enmtools.species(species.name = 'religiosa_West',
-                               range = west.envs,
-                               presence.points = vect(w.occs, geom = c('long', 'lat'), crs = 'EPSG:4326'),
-                               background.points = vect(w.rand, geom = c('long', 'lat'), crs = 'EPSG:4326'))
+west.enmtools <- enmtools.species(species.name = 'religiosa_West',
+                                  range = west.envs,
+                                  presence.points = vect(w.occs, geom = c('long', 'lat'), crs = 'EPSG:4326'),
+                                  background.points = vect(w.rand, geom = c('long', 'lat'), crs = 'EPSG:4326'))
 
 
 ### run niche ID test
@@ -185,7 +185,8 @@ east_west <- enmtools.ecospat.id(species.1 = east.enmtools, species.2 = west.enm
                                  layers = names(glob.envs), R = 100, bg.source = 'points', verbose = T)
 
 # Great Plains vs. West 
-
+gp_west <- enmtools.ecospat.id(species.1 = gp.enmtools, species.2 = west.enmtools, env = glob.envs, nreps = 100,
+                               layers = names(glob.envs), R = 100, bg.source = 'points', verbose = T)
 
 ### run bg test
 

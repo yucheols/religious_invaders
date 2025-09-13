@@ -58,6 +58,8 @@ data/envs/global/human_footprint
 #data/envs/global/allvars_global_processed
 #data/envs/europe/
 #data/envs/north_america
+codes/test_scripts/
+Results/
 
 data/COI_seq
 
