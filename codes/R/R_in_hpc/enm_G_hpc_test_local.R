@@ -30,8 +30,15 @@ envs <- aggregate(envs, fact = 2)
 res(envs)
 
 # load occurrence == grab 50 points for faster run == this will not be used in the actual run on the cluster
-occs <- read.csv('data/occs/europe/europe_occs_thin_30km.csv')
-occs <- occs[sample(nrow(occs), 50), ]
+occs <- read.csv('data/occs/europe/europe_occs_raw.csv')
+head(occs)
+
+# test thinning
+occs_thin <- SDMtune::thinData(coords = occs, env = envs, x = 'long', y = 'lat', verbose = T, progress = T)
+head(occs_thin)
+
+# randomly grab 50 points
+occs <- occs_thin[sample(nrow(occs_thin), 50), ]
 head(occs)
 
 occs <- occs[, c('long', 'lat')]
@@ -55,8 +62,9 @@ plot(bm_data)    # do not use this in the cluster!
 
 ### prep cross-validation data
 cv <- bm_CrossValidation(bm.format = bm_data,
-                         strategy = 'random',
-                         nb.rep = 1,
+                         strategy = 'env',
+                         k = 5,
+                         balance = 'presences',
                          perc = 0.7,
                          do.full.models = T)
 
@@ -79,7 +87,7 @@ cv <- bm_CrossValidation(bm.format = bm_data,
 ### use pre-defined parameterization
 mods_single_bb <- BIOMOD_Modeling(bm.format = bm_data,
                                   modeling.id = 'religiosa_singles_bigboss',
-                                  models = c('GBM','RF','MAXENT'),
+                                  models = c('GAM', 'GBM','RFd','MAXNET'),
                                   CV.strategy = 'random',
                                   CV.nb.rep = 1,
                                   CV.perc = 0.7,
