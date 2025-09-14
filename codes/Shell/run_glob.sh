@@ -7,7 +7,7 @@
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=yshin@amnh.org
 #SBATCH --output=/home/yshin/mendel-nas1/religiosa_nsdm_HPC/models_run/global_10km/output/log/religiosa_glob_10km_%j-%x.log
-#SBATCH --output=/home/yshin/mendel-nas1/religiosa_nsdm_HPC/models_run/global_10km/output/err/religiosa_glob_10km_%j-%x.log
+#SBATCH --output=/home/yshin/mendel-nas1/religiosa_nsdm_HPC/models_run/global_10km/output/err/religiosa_glob_10km_%j-%x.err
 
 # load conda in batch mode
 source /home/yshin/mendel-nas1/miniconda3/etc/profile.d/conda.sh
