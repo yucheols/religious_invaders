@@ -1,5 +1,5 @@
 #####  Global scale ENM for M. religiosa == model at 10km scale == run this script on Mendel cluster
-##### trial run 1
+#####  trial run 1
 
 # clean the working environment
 rm(list = ls(all.names = T))
