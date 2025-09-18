@@ -88,7 +88,7 @@ mods_single_tn <- BIOMOD_Modeling(bm.format = bm_data,
 
 #####  part 3. run ensemble models ---------------
 # run
-mods_em <- BIOMOD_EnsembleModeling(bm.mod = mods_single_bb,
+mods_em <- BIOMOD_EnsembleModeling(bm.mod = mods_single_tn,
                                    models.chosen = 'all',
                                    em.by = 'all',
                                    em.algo = c('EMmean'),

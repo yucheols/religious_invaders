@@ -14,8 +14,12 @@ library(ntbox)
 library(dplyr)
 
 
-####  global scale - North America
+####  fully global
+glob <- read.csv()
 
+####  (global - N America)
+
+####  (global - [N America + Africa])
 
 
 ####  North America
