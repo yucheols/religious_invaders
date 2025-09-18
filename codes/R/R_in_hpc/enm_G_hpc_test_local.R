@@ -30,7 +30,7 @@ envs <- aggregate(envs, fact = 2)
 res(envs)
 
 # load occurrence == grab 50 points for faster run == this will not be used in the actual run on the cluster
-occs <- read.csv('data/occs/europe/europe_occs_raw.csv')
+occs <- read.csv('data/occs/europe/europe_occs_thin_30km.csv')
 head(occs)
 
 # test thinning
@@ -43,16 +43,28 @@ head(occs)
 
 occs <- occs[, c('long', 'lat')]
 
+# load pre-sampled background points and randomly grab 200
+bg <- read.csv('data/bg/kde_biomod2/bg_europe.csv') %>% dplyr::select('long', 'lat')
+bg <- bg[sample(nrow(bg), 400), ]
+
+# bind occs and bg == mark occs 1, mark bg as NA
+occs$pa <- 1
+bg$pa <- NA
+
+colnames(occs) == colnames(bg)         # ensure same column names
+pts <- rbind(occs, bg)                 # bind
+
 
 #####  part 2. data formatting & CV specification ---------------
 ### format data
 bm_data <- BIOMOD_FormatingData(resp.name = 'Mantis religiosa',
-                                resp.var = vect(occs, geom = c('long', 'lat'), crs = 'EPSG:4326'),
+                                resp.var = vect(pts, geom = c('long', 'lat'), crs = 'EPSG:4326'),
                                 expl.var = envs,
                                 dir.name = 'hpc_test_loc',
-                                PA.nb.rep = 1,
+                                PA.nb.rep = 2,
                                 PA.nb.absences = 200,
                                 PA.strategy = 'random',
+                                filter.raster = T,
                                 na.rm = T)
 
 # check formatted data
@@ -85,7 +97,7 @@ cv <- bm_CrossValidation(bm.format = bm_data,
 #####  part 3. run single models ---------------
 
 ### use pre-defined parameterization
-mods_single_bb <- BIOMOD_Modeling(bm.format = bm_data,
+mods_single_tn <- BIOMOD_Modeling(bm.format = bm_data,
                                   modeling.id = 'religiosa_singles_bigboss',
                                   models = c('GAM', 'GBM','RFd','MAXNET'),
                                   CV.strategy = 'random',
@@ -93,7 +105,7 @@ mods_single_bb <- BIOMOD_Modeling(bm.format = bm_data,
                                   CV.perc = 0.7,
                                   CV.do.full.models = T,
                                   OPT.data.type = 'binary',
-                                  OPT.strategy = 'bigboss',
+                                  OPT.strategy = 'tuned',
                                   metric.eval = c('ROC','TSS','BOYCE'),
                                   seed.val = 123,
                                   do.progress = T)
@@ -157,4 +169,4 @@ pred_test <- pred_test[[1]]/1000
 plot(pred_test)  # dont use this in the cluster
 
 # export ensemble raster
-writeRaster(pred_test, 'hpc_test_loc/Mantis.religiosa/test_outputs/religiosa_test_ensemble.tif', overwrite = T)
+writeRaster(pred_test, 'hpc_test_loc/Mantis.religiosa/religiosa_test_ensemble.tif', overwrite = T)

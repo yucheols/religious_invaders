@@ -33,6 +33,19 @@ head(occs)
 occs_thin <- SDMtune::thinData(coords = occs, env = envs, x = 'long', y = 'lat', verbose = T, progress = T)
 occs <- occs_thin[, c('long', 'lat')]
 
+# load background points == note these were sampled 100x the size of occurrence points, and there were sampled on a kernel density surface 
+# of European M.religiosa data points
+# from this set, we will draw three different sets of background points, each set with 10x the number of occurrence points 
+bg <- read.csv('/home/yshin/mendel-nas1/religiosa_nsdm_HPC/models_run/input/data/bg/kde_biomod2/bg_namerica.csv') %>% dplyr::select('long', 'lat')
+head(bg)
+
+# bind occs and bg == mark occs 1, mark bg as NA
+occs$pa <- 1
+bg$pa <- NA
+
+colnames(occs) == colnames(bg)         # ensure same column names
+pts <- rbind(occs, bg)                 # bind
+
 
 #####  part 2. data formatting & CV specification ---------------
 ### format data
@@ -40,9 +53,10 @@ bm_data <- BIOMOD_FormatingData(resp.name = 'Mantis religiosa_namerica',
                                 resp.var = vect(occs, geom = c('long', 'lat'), crs = 'EPSG:4326'),
                                 expl.var = envs,
                                 dir.name = '/home/yshin/mendel-nas1/religiosa_nsdm_HPC/models_run/namerica_5km/output',
-                                PA.nb.rep = 5,
-                                PA.nb.absences = 100000,
+                                PA.nb.rep = 3,
+                                PA.nb.absences = nrow(occs)*10,
                                 PA.strategy = 'random',
+                                filter.raster = T,
                                 na.rm = T)
 
 ### prep cross-validation data
@@ -55,9 +69,9 @@ cv <- bm_CrossValidation(bm.format = bm_data,
 
 #####  part 3. run single models ---------------
 ### use pre-defined parameterization
-mods_single_bb <- BIOMOD_Modeling(bm.format = bm_data,
-                                  modeling.id = 'religiosa_na_singles_bigboss',
-                                  models = c('GAM', 'GBM','RFd','MAXNET'),
+mods_single_tn <- BIOMOD_Modeling(bm.format = bm_data,
+                                  modeling.id = 'religiosa_na_singles_tuned',
+                                  models = c('GAM', 'GBM','RFd','MAXENT'),
                                   CV.strategy = 'env',
                                   CV.perc = 0.7,
                                   CV.k = 5,
@@ -65,7 +79,7 @@ mods_single_bb <- BIOMOD_Modeling(bm.format = bm_data,
                                   CV.strat = 'both',
                                   CV.do.full.models = T,
                                   OPT.data.type = 'binary',
-                                  OPT.strategy = 'bigboss',
+                                  OPT.strategy = 'tuned',
                                   metric.eval = c('ROC','TSS','BOYCE'),
                                   var.import = 100,
                                   seed.val = 123,
@@ -73,21 +87,13 @@ mods_single_bb <- BIOMOD_Modeling(bm.format = bm_data,
 
 
 #####  part 3. run ensemble models ---------------
-# look at eval metrics to dicede on the cutoff value
-eval.metrics <- get_evaluations(mods_single_bb)[, c('metric.eval', 'validation')]
-print(eval.metrics)
-
-# TSS
-eval.tss <- eval.metrics %>% filter(metric.eval == 'TSS') %>% na.omit()
-mean(eval.tss$validation)
-
 # run
 mods_em <- BIOMOD_EnsembleModeling(bm.mod = mods_single_bb,
                                    models.chosen = 'all',
                                    em.by = 'all',
                                    em.algo = c('EMmean'),
                                    metric.select = c('TSS'),
-                                   metric.select.thresh = c(mean(eval.tss$validation) + 0.25),
+                                   metric.select.thresh = c(0.8),
                                    seed.val = 123,
                                    do.progress = T)
 

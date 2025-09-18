@@ -88,7 +88,7 @@ mods_em <- BIOMOD_EnsembleModeling(bm.mod = mods_single_bb,
                                    em.by = 'all',
                                    em.algo = c('EMmean'),
                                    metric.select = c('TSS'),
-                                   metric.select.thresh = c(mean(eval.tss$validation) + 0.25),
+                                   metric.select.thresh = c(0.8),
                                    seed.val = 123,
                                    do.progress = T)
 
