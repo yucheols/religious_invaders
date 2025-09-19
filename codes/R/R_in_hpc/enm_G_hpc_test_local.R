@@ -21,7 +21,7 @@ sessionInfo()
 #####  part 1. prep data ---------------
 # load environmental variables == the input path needs to change for the actual HPC run
 envs <- rast(list.files('data/envs/europe/', pattern = '.tif$', full.names = T))
-envs <- envs[[c('bio1', 'bio2', 'bio12', 'bio15', 'built', 'cropland', 'elev', 'grassland', 'human_footprint', 'shrubs', 'trees')]]
+envs <- envs[[c('bio1', 'bio2', 'bio12', 'bio15', 'cropland', 'elev', 'grassland', 'human_footprint', 'trees')]]
 nlyr(envs)
 names(envs)
 
@@ -73,25 +73,30 @@ plot(bm_data)    # do not use this in the cluster!
 
 
 ### prep cross-validation data
-cv <- bm_CrossValidation(bm.format = bm_data,
-                         strategy = 'env',
-                         k = 5,
-                         balance = 'presences',
-                         perc = 0.7,
-                         do.full.models = T)
+#cv <- bm_CrossValidation(bm.format = bm_data,
+#                         strategy = 'env',
+#                         k = 5,
+#                         balance = 'presences',
+#                         perc = 0.7,
+#                         do.full.models = T)
 
 
-### tune model parameters == this will take a long time (almost 6 hours on my computer)
-#mod.opts <- bm_ModelingOptions(data.type = 'binary',
-#                               models = c('GBM','RF','MAXENT'),
-#                               strategy = 'tuned',
-#                               bm.format = bm_data)
+### tune parameters for RFd and MaxEnt
+opt_tn <- bm_ModelingOptions(data.type = 'binary',
+                             models = c('RFd','MAXENT'),
+                             strategy = 'tuned',
+                             bm.format = bm_data)
 
-#print(mod.opts)
-#class(mod.opts)
 
-# save tuning object as RDS file for later use // because we dont want to run this again!!!!
-#saveRDS(mod.opts, 'hpc_test_loc/religiosa_model_tuning_out.rds')
+### set GAM and GBM paramters to bigboss specification
+opt_bb <- bm_ModelingOptions(data.type = 'binary',
+                             models = c('GAM', 'GBM'),
+                             strategy = 'bigboss',
+                             bm.format = bm_data)
+
+
+### gather user specified paramters
+opt_user <- c(opt_tn, opt_bb)
 
 
 #####  part 3. run single models ---------------
@@ -99,52 +104,37 @@ cv <- bm_CrossValidation(bm.format = bm_data,
 ### use pre-defined parameterization
 mods_single_tn <- BIOMOD_Modeling(bm.format = bm_data,
                                   modeling.id = 'religiosa_singles_bigboss',
-                                  models = c('GAM', 'GBM','RFd','MAXNET'),
+                                  models = c('GAM', 'GBM','RFd','MAXENT'),
                                   CV.strategy = 'random',
                                   CV.nb.rep = 1,
                                   CV.perc = 0.7,
-                                  CV.do.full.models = T,
+                                  CV.do.full.models = F,
                                   OPT.data.type = 'binary',
-                                  OPT.strategy = 'tuned',
+                                  OPT.strategy = 'user.defined',
+                                  OPT.user.val = opt_user,
                                   metric.eval = c('ROC','TSS','BOYCE'),
+                                  var.import = 1,
                                   seed.val = 123,
                                   do.progress = T)
 
 # check model results
-print(mods_single_bb)
+print(mods_single_tn)
 
 # get evaluation
-get_evaluations(mods_single_bb)
+get_evaluations(mods_single_tn)
 
 # look at mean response curves
 bm_PlotResponseCurves(bm.out = mods_single_bb, models.chosen = 'all', fixed.var = 'mean')  # dont run this in the cluster
 
 
 #####  part 4. run ensemble models ---------------
-### look at eval metrics to dicede on the cutoff value
-eval.metrics <- get_evaluations(mods_single_bb)[, c('metric.eval', 'validation')]
-print(eval.metrics)
-
-# TSS
-eval.tss <- eval.metrics %>% filter(metric.eval == 'TSS') %>% na.omit()
-mean(eval.tss$validation)
-
-# ROC
-eval.roc <- eval.metrics %>% filter(metric.eval == 'ROC') %>% na.omit()
-mean(eval.roc$validation)
-
-# BOYCE
-eval.boyce <- eval.metrics %>% filter(metric.eval == 'BOYCE') %>% na.omit()
-mean(eval.boyce$validation)
-
-
 ### run
-mods_em <- BIOMOD_EnsembleModeling(bm.mod = mods_single_bb,
+mods_em <- BIOMOD_EnsembleModeling(bm.mod = mods_single_tn,
                                    models.chosen = 'all',
                                    em.by = 'all',
                                    em.algo = c('EMmean','EMmedian'),
-                                   metric.select = c('TSS','ROC','BOYCE'),
-                                   metric.select.thresh = c(mean(eval.tss$validation), mean(eval.roc$validation), mean(eval.boyce$validation)),
+                                   metric.select = c('TSS'),
+                                   metric.select.thresh = c(0.2),
                                    var.import = 5,
                                    seed.val = 123,
                                    do.progress = T)
@@ -157,8 +147,8 @@ em_proj_test <- BIOMOD_EnsembleForecasting(bm.em = mods_em,
                                            proj.name = 'religiosa_test',
                                            new.env = envs,
                                            models.chosen = 'all',
-                                           metric.binary = c('TSS','ROC','BOYCE'),
-                                           metric.filter = c('TSS','ROC','BOYCE'))
+                                           metric.binary = c('TSS'),
+                                           metric.filter = c('TSS'))
 
 
 ### see model predictions == note that the scale is (predicted habitat suitability) * 1000 == thus on the scale of 0-1000

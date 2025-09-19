@@ -15,7 +15,34 @@ library(dplyr)
 
 
 ####  fully global
-glob <- read.csv()
+# load occurrences
+glob_occs <- read.csv('data/occs/global/global_occs_thin_30km.csv')
+head(glob_occs)
+nrow(glob_occs)
+
+# load environmental layers
+glob_envs <- rast(list.files(path = 'data/envs/global/allvars_global_processed/', pattern = '.tif$', full.names = T))
+plot(glob_envs[[1]])
+
+# plot points over the map
+points(glob_occs[, c('long', 'lat')])
+
+# make a 500km dissolved circular buffer around each points
+glob_occs_sf <- st_transform(x = st_as_sf(x = glob_occs, coords = c('long', 'lat'), crs = crs(glob_envs)), crs = 3857)   # change to equal-area projection
+glob_buff <- st_buffer(x = glob_occs_sf, dist = 500000) %>% st_union() %>% st_sf() %>% st_transform(crs = crs(glob_envs))
+plot(glob_buff, border = 'blue', lwd = 3, add = T)
+
+# create kde layer
+glob_kde <- biaslayer(occs_df = glob_occs, longitude = 'long', latitude = 'lat', raster_mold = raster::raster(glob_envs[[1]]))
+plot(glob_kde)
+
+# export kde layer
+writeRaster(glob_kde, 'data/kde/kde_full_glob.tif', overwrite = T)
+
+# sample bg == sample 100x of occurrence points
+bg_glob <- ENMwrap::bg_sampler(envs = glob_envs, n = nrow(glob_occs)*100, occs_list = list(glob_occs), bias.grid = glob_kde, method = 'bias.grid')
+head()
+nrow()
 
 ####  (global - N America)
 

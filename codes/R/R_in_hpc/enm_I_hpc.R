@@ -23,7 +23,7 @@ sessionInfo()
 #####  part 1. prep data ---------------
 # load environmental variables
 envs <- rast(list.files(path = '/home/yshin/mendel-nas1/religiosa_nsdm_HPC/models_run/input/data/envs/north_america', pattern = '.tif$', full.names = T))
-envs <- envs[[c('bio1', 'bio2', 'bio12', 'bio15', 'built', 'cropland', 'elev', 'grassland', 'human_footprint', 'shrubs', 'trees')]]
+envs <- envs[[c('bio1', 'bio2', 'bio12', 'bio15', 'cropland', 'elev', 'grassland', 'human_footprint', 'trees')]]
 
 # load occs
 occs <- read.csv('/home/yshin/mendel-nas1/religiosa_nsdm_HPC/models_run/input/data/occs/north_america/north_america_occs_raw.csv')
@@ -47,7 +47,7 @@ colnames(occs) == colnames(bg)         # ensure same column names
 pts <- rbind(occs, bg)                 # bind
 
 
-#####  part 2. data formatting & CV specification ---------------
+#####  part 2. data formatting & parameter specification ---------------
 ### format data
 bm_data <- BIOMOD_FormatingData(resp.name = 'Mantis religiosa_namerica',
                                 resp.var = vect(occs, geom = c('long', 'lat'), crs = 'EPSG:4326'),
@@ -60,11 +60,29 @@ bm_data <- BIOMOD_FormatingData(resp.name = 'Mantis religiosa_namerica',
                                 na.rm = T)
 
 ### prep cross-validation data
-cv <- bm_CrossValidation(bm.format = bm_data,
-                         strategy = 'env',
-                         k = 5,
-                         perc = 0.7,
-                         do.full.models = T)
+#cv <- bm_CrossValidation(bm.format = bm_data,
+#                         strategy = 'env',
+#                         k = 5,
+#                         perc = 0.7,
+#                         do.full.models = T)
+
+
+### tune parameters for RFd and MaxEnt
+opt_tn <- bm_ModelingOptions(data.type = 'binary',
+                             models = c('RFd','MAXENT'),
+                             strategy = 'tuned',
+                             bm.format = bm_data)
+
+
+### set GAM and GBM paramters to bigboss specification
+opt_bb <- bm_ModelingOptions(data.type = 'binary',
+                             models = c('GAM', 'GBM'),
+                             strategy = 'bigboss',
+                             bm.format = bm_data)
+
+
+### gather user specified paramters
+opt_user <- c(opt_tn, opt_bb)
 
 
 #####  part 3. run single models ---------------
@@ -77,11 +95,12 @@ mods_single_tn <- BIOMOD_Modeling(bm.format = bm_data,
                                   CV.k = 5,
                                   CV.balance = 'presences',
                                   CV.strat = 'both',
-                                  CV.do.full.models = T,
+                                  CV.do.full.models = F,
                                   OPT.data.type = 'binary',
-                                  OPT.strategy = 'tuned',
+                                  OPT.strategy = 'user.defined',
+                                  OPT.user.val = opt_user,
                                   metric.eval = c('ROC','TSS','BOYCE'),
-                                  var.import = 100,
+                                  var.import = 1,
                                   seed.val = 123,
                                   do.progress = T)
 
@@ -93,7 +112,7 @@ mods_em <- BIOMOD_EnsembleModeling(bm.mod = mods_single_tn,
                                    em.by = 'all',
                                    em.algo = c('EMmean'),
                                    metric.select = c('TSS'),
-                                   metric.select.thresh = c(0.8),
+                                   metric.select.thresh = c(0.7),
                                    seed.val = 123,
                                    do.progress = T)
 

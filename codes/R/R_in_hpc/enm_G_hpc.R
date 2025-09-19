@@ -21,7 +21,7 @@ sessionInfo()
 #####  part 1. prep data ---------------
 # load environmental variables
 envs <- rast(list.files(path = '/home/yshin/mendel-nas1/religiosa_nsdm_HPC/models_run/input/data/envs/global/allvars_global_processed', pattern = '.tif$', full.names = T))
-envs <- envs[[c('bio1', 'bio2', 'bio12', 'bio15', 'built', 'cropland', 'elev', 'grassland', 'human_footprint', 'shrubs', 'trees')]]
+envs <- envs[[c('bio1', 'bio2', 'bio12', 'bio15', 'cropland', 'elev', 'grassland', 'human_footprint', 'trees')]]
 
 # these rasters are at 5km resolution (= 0.04166667dd) == resample to 10km using "aggregate" with a factor of 2
 envs <- aggregate(envs, fact = 2)
