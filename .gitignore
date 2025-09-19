@@ -59,6 +59,8 @@ data/envs/global/human_footprint
 #data/envs/europe/
 #data/envs/north_america
 codes/test_scripts/
+codes/R/R_in_hpc/small_sccs/
+
 Results/
 hpc_test_loc/
 maxent.jar
