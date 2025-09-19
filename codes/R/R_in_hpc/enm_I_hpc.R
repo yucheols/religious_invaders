@@ -50,7 +50,7 @@ pts <- rbind(occs, bg)                 # bind
 #####  part 2. data formatting & parameter specification ---------------
 ### format data
 bm_data <- BIOMOD_FormatingData(resp.name = 'Mantis religiosa_namerica',
-                                resp.var = vect(occs, geom = c('long', 'lat'), crs = 'EPSG:4326'),
+                                resp.var = vect(pts, geom = c('long', 'lat'), crs = 'EPSG:4326'),
                                 expl.var = envs,
                                 dir.name = '/home/yshin/mendel-nas1/religiosa_nsdm_HPC/models_run/namerica_5km/output',
                                 PA.nb.rep = 3,

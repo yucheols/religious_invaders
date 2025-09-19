@@ -63,5 +63,7 @@ Results/
 hpc_test_loc/
 maxent.jar
 
+codes/R/R_in_hpc/small_sccs/
+
 data/COI_seq
 
