@@ -104,6 +104,13 @@ mods_single_tn <- BIOMOD_Modeling(bm.format = bm_data,
                                   seed.val = 123,
                                   do.progress = T)
 
+# check model results
+print(mods_single_tn)
+
+# get evaluation
+single_mods_eval_metrics <- get_evaluations(mods_single_tn)
+write.csv(single_mods_eval_metrics, '/home/yshin/mendel-nas1/religiosa_nsdm_HPC/models_run/namerica_5km/output/single_mods_eval_metrics.csv')
+
 
 #####  part 3. run ensemble models ---------------
 # run
@@ -116,6 +123,13 @@ mods_em <- BIOMOD_EnsembleModeling(bm.mod = mods_single_tn,
                                    seed.val = 123,
                                    do.progress = T)
 
+# check model results
+print(mods_em)
+
+# get evaluation
+em_eval_metrics <- get_evaluations(mods_em)
+write.csv(em_eval_metrics, '/home/yshin/mendel-nas1/religiosa_nsdm_HPC/models_run/namerica_5km/output/em_eval_metrics.csv')
+
 
 #####  part 5. projection ---------------
 ### project ensemble models to the current envs
@@ -126,6 +140,20 @@ em_proj <- BIOMOD_EnsembleForecasting(bm.em = mods_em,
                                       models.chosen = 'all',
                                       metric.binary = c('TSS'),
                                       metric.filter = c('TSS'))
+
+### project to Europe
+# load Europe envs layers
+envs_eu <- rast(list.files(path = '/home/yshin/mendel-nas1/religiosa_nsdm_HPC/models_run/input/data/envs/europe', pattern = '.tif$', full.names = T))
+envs_eu <- envs_eu[[c('bio1', 'bio2', 'bio12', 'bio15', 'cropland', 'elev', 'grassland', 'human_footprint', 'trees')]]
+
+# project
+em_proj_eu <- BIOMOD_EnsembleForecasting(bm.em = mods_em,
+                                         bm.proj = NULL,
+                                         proj.name = 'religiosa_namerica2eu_5km',
+                                         new.env = envs_eu,
+                                         models.chosen = envs_eu,
+                                         metric.binary = c('TSS'),
+                                         metric.filter = c('TSS'))
 
 ### project globally
 # load global layers

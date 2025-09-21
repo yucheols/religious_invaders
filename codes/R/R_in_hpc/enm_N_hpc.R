@@ -102,6 +102,13 @@ mods_single_tn <- BIOMOD_Modeling(bm.format = bm_data,
                                   seed.val = 123,
                                   do.progress = T)
 
+# check model results
+print(mods_single_tn)
+
+# get evaluation
+single_mods_eval_metrics <- get_evaluations(mods_single_tn)
+write.csv(single_mods_eval_metrics, '/home/yshin/mendel-nas1/religiosa_nsdm_HPC/models_run/europe_5km/output/single_mods_eval_metrics.csv')
+
 
 #####  part 3. run ensemble models ---------------
 # run
@@ -124,6 +131,12 @@ em_proj <- BIOMOD_EnsembleForecasting(bm.em = mods_em,
                                       models.chosen = 'all',
                                       metric.binary = c('TSS'),
                                       metric.filter = c('TSS'))
+# check model results
+print(mods_em)
+
+# get evaluation
+em_eval_metrics <- get_evaluations(mods_em)
+write.csv(em_eval_metrics, '/home/yshin/mendel-nas1/religiosa_nsdm_HPC/models_run/europe_5km/output/em_eval_metrics.csv')
 
 
 ### project to North America
