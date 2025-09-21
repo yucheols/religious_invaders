@@ -58,3 +58,23 @@ names(envs_glob)
 # run mess
 eu_glob_mess <- ntb_mess(M_stack = raster::stack(envs_eu), G_stack = raster::stack(envs_glob))
 plot(eu_glob_mess)
+
+# plot
+ggplot() +
+  geom_spatraster(data = rast(eu_glob_mess)) +
+  coord_sf(expand = F) +
+  scale_fill_whitebox_c(palette = 'bl_yl_rd',
+                        name = 'Extrapolation',
+                        breaks = c(-20, 60),
+                        labels = c('Low', 'High'),
+                        guide = guide_colorbar(title.position = 'top',
+                                               title.hjust = 0.5)) +
+  theme_classic() +
+  theme(panel.border = element_rect(fill = NA),
+        panel.grid.major = element_line(),
+        axis.text = element_text(size = 13),
+        legend.position = 'top',
+        legend.text = element_text(size = 13),
+        legend.title = element_text(size = 16, face = 'bold', margin = margin(b = 15)),
+        axis.text.x = element_text(angle = 45, margin = margin(t = 15)))
+
