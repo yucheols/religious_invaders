@@ -129,7 +129,7 @@ em_proj <- BIOMOD_EnsembleForecasting(bm.em = mods_em,
 ### project to North America
 # load North America envs layers
 envs_na <- rast(list.files(path = '/home/yshin/mendel-nas1/religiosa_nsdm_HPC/models_run/input/data/envs/north_america', pattern = '.tif$', full.names = T))
-envs_na <- envs_na[[c('bio1', 'bio2', 'bio12', 'bio15', 'built', 'cropland', 'elev', 'grassland', 'human_footprint', 'shrubs', 'trees')]]
+envs_na <- envs_na[[c('bio1', 'bio2', 'bio12', 'bio15', 'cropland', 'elev', 'grassland', 'human_footprint', 'trees')]]
 
 
 # project
@@ -142,4 +142,16 @@ em_proj_na <- BIOMOD_EnsembleForecasting(bm.em = mods_em,
                                          metric.filter = c('TSS'))
 
 
+### project Globally
+# load global layers
+envs_glob <- rast(list.files(path = '/home/yshin/mendel-nas1/religiosa_nsdm_HPC/models_run/input/data/envs/global/allvars_global_processed', pattern = '.tif$', full.names = T))
+envs_glob <- envs_glob[[c('bio1', 'bio2', 'bio12', 'bio15', 'cropland', 'elev', 'grassland', 'human_footprint', 'trees')]]
 
+# project
+em_proj_glob <- BIOMOD_EnsembleForecasting(bm.em = mods_em,
+                                           bm.proj = NULL,
+                                           proj.name = 'religiosa_europe2glob_5km',
+                                           new.env = envs_glob,
+                                           models.chosen = 'all',
+                                           metric.binary = c('TSS'),
+                                           metric.filter = c('TSS'))
