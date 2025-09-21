@@ -8,6 +8,7 @@ gc()
 library(ntbox)
 library(terra)
 library(tidyterra)
+library(ggplot2)
 
 ###  MESS between native (Europe) and non-native (N America) ranges of M. religiosa
 # load europe environment
@@ -47,3 +48,13 @@ ggplot() +
 # save
 ggsave()
   
+
+###  MESS between native (Europe) and global ranges of M. religiosa
+# load global environment
+envs_glob <- rast(list.files(path = 'data/envs/global/allvars_global_processed/', pattern = '.tif$', full.names = T))
+envs_glob <- envs_glob[[names(envs_na)]]
+names(envs_glob)
+
+# run mess
+eu_glob_mess <- ntb_mess(M_stack = raster::stack(envs_eu), G_stack = raster::stack(envs_glob))
+plot(eu_glob_mess)
