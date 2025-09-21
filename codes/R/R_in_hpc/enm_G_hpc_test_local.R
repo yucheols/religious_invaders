@@ -121,7 +121,8 @@ mods_single_tn <- BIOMOD_Modeling(bm.format = bm_data,
 print(mods_single_tn)
 
 # get evaluation
-get_evaluations(mods_single_tn)
+single_mods_eval_metrics <- get_evaluations(mods_single_tn)
+write.csv(single_mods_eval_metrics, 'hpc_test_loc/Mantis.religiosa/single_mods_eval_metrics.csv')
 
 # look at mean response curves
 bm_PlotResponseCurves(bm.out = mods_single_bb, models.chosen = 'all', fixed.var = 'mean')  # dont run this in the cluster
@@ -138,6 +139,10 @@ mods_em <- BIOMOD_EnsembleModeling(bm.mod = mods_single_tn,
                                    var.import = 5,
                                    seed.val = 123,
                                    do.progress = T)
+
+# get evaluation
+em_eval_metrics <- get_evaluations(mods_em)
+write.csv(em_eval_metrics, 'hpc_test_loc/Mantis.religiosa/em_eval_metrics.csv')
 
 
 #####  part 5. projection ---------------
