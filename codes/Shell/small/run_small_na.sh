@@ -1,5 +1,5 @@
 #!/bin/sh
-#SBATCH --job-name=religiosa_na_5km
+#SBATCH --job-name=small_religiosa_na_5km
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=30
 #SBATCH --time=144:00:00
