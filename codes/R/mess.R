@@ -64,9 +64,10 @@ ggplot() +
   geom_spatraster(data = rast(eu_glob_mess)) +
   coord_sf(expand = F) +
   scale_fill_whitebox_c(palette = 'bl_yl_rd',
+                        direction = -1,
                         name = 'Extrapolation',
                         breaks = c(-20, 60),
-                        labels = c('Low', 'High'),
+                        labels = c('High', 'Low'),
                         guide = guide_colorbar(title.position = 'top',
                                                title.hjust = 0.5)) +
   theme_classic() +

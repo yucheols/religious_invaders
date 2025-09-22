@@ -17,4 +17,4 @@ conda activate nsdm_hpc
 cd /home/yshin/mendel-nas1/religiosa_nsdm_HPC  # this will be the R working directory on the cluster
 
 # run the R script
-Rscript /home/yshin/mendel-nas1/religiosa_nsdm_HPC/scripts/R/small/small_enm_I_hpc.R
+Rscript /home/yshin/mendel-nas1/religiosa_nsdm_HPC/scripts/R/small/test_mx.R

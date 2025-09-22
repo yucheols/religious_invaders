@@ -19,6 +19,9 @@ library(dplyr)
 # record session info
 sessionInfo()
 
+# specify maxent.jar path
+options(maxent.jar = '/home/yshin/mendel-nas1/religiosa_nsdm_HPC/maxent.jar')
+
 
 #####  part 1. prep data ---------------
 # load environmental variables
