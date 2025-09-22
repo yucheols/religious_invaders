@@ -154,7 +154,7 @@ em_proj_eu <- BIOMOD_EnsembleForecasting(bm.em = mods_em,
                                          bm.proj = NULL,
                                          proj.name = 'religiosa_namerica2eu_5km',
                                          new.env = envs_eu,
-                                         models.chosen = envs_eu,
+                                         models.chosen = 'all',
                                          metric.binary = c('TSS'),
                                          metric.filter = c('TSS'))
 
