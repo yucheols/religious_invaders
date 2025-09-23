@@ -61,6 +61,8 @@ data/envs/global/human_footprint
 codes/test_scripts/
 codes/R/R_in_hpc/small_sccs/
 codes/R/sccs
+codes/R/nichespace_vis.r
+
 
 plots/sccs/
 
