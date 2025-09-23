@@ -74,8 +74,8 @@ ggplot() +
   theme(panel.border = element_rect(fill = NA),
         panel.grid.major = element_line(),
         axis.text = element_text(size = 13),
+        axis.text.x = element_text(angle = 45, margin = margin(t = 15)),
         legend.position = 'top',
         legend.text = element_text(size = 13),
-        legend.title = element_text(size = 16, face = 'bold', margin = margin(b = 15)),
-        axis.text.x = element_text(angle = 45, margin = margin(t = 15)))
+        legend.title = element_text(size = 16, face = 'bold', margin = margin(b = 15)))
 
