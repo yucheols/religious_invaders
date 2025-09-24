@@ -65,16 +65,15 @@ ggplot() +
   coord_sf(expand = F) +
   scale_fill_whitebox_c(palette = 'bl_yl_rd',
                         direction = -1,
-                        name = 'Extrapolation',
+                        name = 'MESS',
                         breaks = c(-20, 60),
-                        labels = c('High', 'Low'),
+                        labels = c('Dissimilar', 'Similar'),
                         guide = guide_colorbar(title.position = 'top',
                                                title.hjust = 0.5)) +
   theme_classic() +
   theme(panel.border = element_rect(fill = NA),
         panel.grid.major = element_line(),
         axis.text = element_text(size = 13),
-        axis.text.x = element_text(angle = 45, margin = margin(t = 15)),
         legend.position = 'top',
         legend.text = element_text(size = 13),
         legend.title = element_text(size = 16, face = 'bold', margin = margin(b = 15)))
