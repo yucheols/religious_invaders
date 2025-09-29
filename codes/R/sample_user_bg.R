@@ -51,7 +51,7 @@ nrow()
 
 ####  North America
 # load occurrences
-na_occs <- read.csv('data/occs/north_america/north_america_occs_thin_30km.csv')
+na_occs <- read.csv('data/occs/north_america/north_america_occs_filtered_thin_30km.csv')
 head(na_occs)
 nrow(na_occs)
 
@@ -85,7 +85,7 @@ write.csv(bg_na, 'data/bg/kde_biomod2/bg_namerica.csv')
 
 ####  Europe
 # load occurrences
-eu_occs <- read.csv('data/occs/europe/europe_occs_thin_30km.csv')
+eu_occs <- read.csv('data/occs/europe/europe_occs_filtered_thinned_30km.csv')
 head(eu_occs)
 nrow(eu_occs)
 
