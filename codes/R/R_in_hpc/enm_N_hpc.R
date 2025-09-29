@@ -9,6 +9,7 @@ gc()
 set.seed(1234)
 
 # load packages
+library(future)       # for parallel processing
 library(terra)
 library(sf)
 library(SDMtune)
@@ -21,6 +22,12 @@ sessionInfo()
 # specify maxent.jar path
 options(maxent.jar = '/home/yshin/mendel-nas1/religiosa_nsdm_HPC/maxent.jar')
 
+# set output directory
+out.dir <- '/home/yshin/mendel-nas1/religiosa_nsdm_HPC/models_run/europe_5km/output'
+
+# set up multicore processing
+plan(multisession, workers = 28)    # specify number of cores
+
 
 #####  part 1. prep data ---------------
 # load environmental variables
@@ -31,9 +38,18 @@ envs <- envs[[c('bio1', 'bio2', 'bio12', 'bio15', 'cropland', 'elev', 'grassland
 occs <- read.csv('/home/yshin/mendel-nas1/religiosa_nsdm_HPC/models_run/input/data/occs/europe/europe_occs_raw.csv')
 head(occs)
 
+# resample rasters to 30km resolution for use as a template for distance-based thinning
+envs_30km <- terra::aggregate(envs, fact = 6)
+
+# grab points between 1980 and 2010
+eu_occs_filt <- occs %>% dplyr::filter(between(occs$year, 1970, 2020))
+
 # thin occurrence points
-occs_thin <- SDMtune::thinData(coords = occs, env = envs, x = 'long', y = 'lat', verbose = T, progress = T)
+occs_thin <- SDMtune::thinData(coords = eu_occs_filt, env = envs_30km, x = 'long', y = 'lat', verbose = T, progress = T)
 occs <- occs_thin[, c('long', 'lat')]
+
+# export thinned occs
+write.csv(occs, paste0(out.dir, '/eu_occs_filtered_thin_30km.csv'))
 
 # load background points == note these were sampled 100x the size of occurrence points, and there were sampled on a kernel density surface 
 # of European M.religiosa data points
@@ -54,7 +70,7 @@ pts <- rbind(occs, bg)                 # bind
 bm_data <- BIOMOD_FormatingData(resp.name = 'Mantis religiosa_europe',
                                 resp.var = vect(pts, geom = c('long', 'lat'), crs = 'EPSG:4326'),
                                 expl.var = envs,
-                                dir.name = '/home/yshin/mendel-nas1/religiosa_nsdm_HPC/models_run/europe_5km/output',
+                                dir.name = out.dir,
                                 PA.nb.rep = 3,
                                 PA.nb.absences = nrow(occs)*10,
                                 PA.strategy = 'random',
