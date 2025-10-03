@@ -77,14 +77,6 @@ bm_data <- BIOMOD_FormatingData(resp.name = 'Mantis religiosa_europe',
                                 filter.raster = T,
                                 na.rm = T)
 
-### prep cross-validation data
-#cv <- bm_CrossValidation(bm.format = bm_data,
-#                         strategy = 'env',
-#                         k = 5,
-#                         perc = 0.7,
-#                         do.full.models = T)
-
-
 ### tune parameters for RFd and MaxEnt
 opt_tn <- bm_ModelingOptions(data.type = 'binary',
                              models = c('RFd','MAXENT'),
@@ -113,7 +105,7 @@ mods_single_tn <- BIOMOD_Modeling(bm.format = bm_data,
                                   CV.k = 5,
                                   CV.balance = 'presences',
                                   CV.strat = 'both',
-                                  CV.do.full.models = T,
+                                  CV.do.full.models = F,
                                   OPT.data.type = 'binary',
                                   OPT.strategy = 'user.defined',
                                   OPT.user.val = opt_user,
@@ -136,8 +128,8 @@ mods_em <- BIOMOD_EnsembleModeling(bm.mod = mods_single_tn,
                                    models.chosen = 'all',
                                    em.by = 'all',
                                    em.algo = c('EMmean'),
-                                   metric.select = c('TSS'),
-                                   metric.select.thresh = c(0.7),
+                                   metric.select = c('BOYCE'),
+                                   metric.select.thresh = c(0.9),
                                    seed.val = 123,
                                    do.progress = T)
 
@@ -149,8 +141,8 @@ em_proj <- BIOMOD_EnsembleForecasting(bm.em = mods_em,
                                       proj.name = 'religiosa_europe_5km',
                                       new.env = envs,
                                       models.chosen = 'all',
-                                      metric.binary = c('TSS'),
-                                      metric.filter = c('TSS'))
+                                      metric.binary = c('BOYCE'),
+                                      metric.filter = c('BOYCE'))
 # check model results
 print(mods_em)
 
@@ -171,8 +163,8 @@ em_proj_na <- BIOMOD_EnsembleForecasting(bm.em = mods_em,
                                          proj.name = 'religiosa_europe2na_5km',
                                          new.env = envs_na,
                                          models.chosen = 'all',
-                                         metric.binary = c('TSS'),
-                                         metric.filter = c('TSS'))
+                                         metric.binary = c('BOYCE'),
+                                         metric.filter = c('BOYCE'))
 
 
 ### project Globally
@@ -186,5 +178,5 @@ em_proj_glob <- BIOMOD_EnsembleForecasting(bm.em = mods_em,
                                            proj.name = 'religiosa_europe2glob_5km',
                                            new.env = envs_glob,
                                            models.chosen = 'all',
-                                           metric.binary = c('TSS'),
-                                           metric.filter = c('TSS'))
+                                           metric.binary = c('BOYCE'),
+                                           metric.filter = c('BOYCE'))
