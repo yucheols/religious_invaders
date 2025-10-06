@@ -141,8 +141,8 @@ em_proj <- BIOMOD_EnsembleForecasting(bm.em = mods_em,
                                       proj.name = 'religiosa_europe_5km',
                                       new.env = envs,
                                       models.chosen = 'all',
-                                      metric.binary = c('BOYCE'),
-                                      metric.filter = c('BOYCE'))
+                                      metric.binary = NULL,
+                                      metric.filter = NULL)
 # check model results
 print(mods_em)
 
@@ -163,8 +163,8 @@ em_proj_na <- BIOMOD_EnsembleForecasting(bm.em = mods_em,
                                          proj.name = 'religiosa_europe2na_5km',
                                          new.env = envs_na,
                                          models.chosen = 'all',
-                                         metric.binary = c('BOYCE'),
-                                         metric.filter = c('BOYCE'))
+                                         metric.binary = NULL,
+                                         metric.filter = NULL)
 
 
 ### project Globally
@@ -178,5 +178,5 @@ em_proj_glob <- BIOMOD_EnsembleForecasting(bm.em = mods_em,
                                            proj.name = 'religiosa_europe2glob_5km',
                                            new.env = envs_glob,
                                            models.chosen = 'all',
-                                           metric.binary = c('BOYCE'),
-                                           metric.filter = c('BOYCE'))
+                                           metric.binary = NULL,
+                                           metric.filter = NULL)
