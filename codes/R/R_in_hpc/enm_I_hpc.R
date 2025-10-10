@@ -1,4 +1,4 @@
-#####  Invaded range ENM for M. religiosa (North America) == model at 5km scale == run this script on Mendel cluster
+#####  Invaded range ENM for M. religiosa (North America) == model at 10km scale == run this script on Mendel cluster
 #####  use only North America occurrence points (i.e. no projection from the native range models)
 #####  trial run 1
 
@@ -27,6 +27,9 @@ options(maxent.jar = '/home/yshin/mendel-nas1/religiosa_nsdm_HPC/maxent.jar')
 # load environmental variables
 envs <- rast(list.files(path = '/home/yshin/mendel-nas1/religiosa_nsdm_HPC/models_run/input/data/envs/north_america', pattern = '.tif$', full.names = T))
 envs <- envs[[c('bio1', 'bio2', 'bio12', 'bio15', 'cropland', 'elev', 'grassland', 'human_footprint', 'trees')]]
+
+# resample to 10km resolution (fact = 2)
+envs <- terra::aggregate(envs, fact = 2)
 
 # load occs
 occs <- read.csv('/home/yshin/mendel-nas1/religiosa_nsdm_HPC/models_run/input/data/occs/north_america/north_america_occs_raw.csv')
