@@ -34,6 +34,10 @@ plan(multisession, workers = 28)    # specify number of cores
 envs <- rast(list.files(path = '/home/yshin/mendel-nas1/religiosa_nsdm_HPC/models_run/input/data/envs/europe', pattern = '.tif$', full.names = T))
 envs <- envs[[c('bio1', 'bio2', 'bio12', 'bio15', 'cropland', 'elev', 'grassland', 'human_footprint', 'trees')]]
 
+# resample to 10km resolution (fact = 2)
+envs <- terra::aggregate(envs, fact = 2)
+print(envs)
+
 # load occs
 occs <- read.csv('/home/yshin/mendel-nas1/religiosa_nsdm_HPC/models_run/input/data/occs/europe/europe_occs_raw.csv')
 head(occs)

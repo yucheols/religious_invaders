@@ -3,7 +3,7 @@
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=30
 #SBATCH --time=144:00:00
-#SBATCH --mem=300G
+#SBATCH --mem=370G
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=yshin@amnh.org
 #SBATCH --output=/home/yshin/mendel-nas1/religiosa_nsdm_HPC/models_run/europe_5km/output/log/religiosa_eu_5km_%j-%x.log
