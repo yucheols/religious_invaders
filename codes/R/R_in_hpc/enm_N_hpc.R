@@ -137,6 +137,13 @@ mods_em <- BIOMOD_EnsembleModeling(bm.mod = mods_single_tn,
                                    seed.val = 123,
                                    do.progress = T)
 
+# check model results
+print(mods_em)
+
+# get evaluation
+em_eval_metrics <- get_evaluations(mods_em)
+write.csv(em_eval_metrics, '/home/yshin/mendel-nas1/religiosa_nsdm_HPC/models_run/europe_5km/output/em_eval_metrics.csv')
+
 
 #####  part 5. projection ---------------
 ### project ensemble models to the current envs
@@ -147,12 +154,6 @@ em_proj <- BIOMOD_EnsembleForecasting(bm.em = mods_em,
                                       models.chosen = 'all',
                                       metric.binary = NULL,
                                       metric.filter = NULL)
-# check model results
-print(mods_em)
-
-# get evaluation
-em_eval_metrics <- get_evaluations(mods_em)
-write.csv(em_eval_metrics, '/home/yshin/mendel-nas1/religiosa_nsdm_HPC/models_run/europe_5km/output/em_eval_metrics.csv')
 
 
 ### project to North America
