@@ -66,27 +66,17 @@ bm_data <- BIOMOD_FormatingData(resp.name = 'Mantis religiosa_namerica',
                                 filter.raster = T,
                                 na.rm = T)
 
-### prep cross-validation data
-#cv <- bm_CrossValidation(bm.format = bm_data,
-#                         strategy = 'env',
-#                         k = 5,
-#                         perc = 0.7,
-#                         do.full.models = T)
-
-
 ### tune parameters for RFd and MaxEnt
 opt_tn <- bm_ModelingOptions(data.type = 'binary',
                              models = c('RFd','MAXENT'),
                              strategy = 'tuned',
                              bm.format = bm_data)
 
-
 ### set GAM and GBM paramters to bigboss specification
 opt_bb <- bm_ModelingOptions(data.type = 'binary',
                              models = c('GAM', 'GBM'),
                              strategy = 'bigboss',
                              bm.format = bm_data)
-
 
 ### gather user specified paramters
 opt_user <- c(opt_tn, opt_bb)
@@ -125,8 +115,8 @@ mods_em <- BIOMOD_EnsembleModeling(bm.mod = mods_single_tn,
                                    models.chosen = 'all',
                                    em.by = 'all',
                                    em.algo = c('EMmean'),
-                                   metric.select = c('TSS'),
-                                   metric.select.thresh = c(0.7),
+                                   metric.select = c('BOYCE'),
+                                   metric.select.thresh = c(0.9),
                                    seed.val = 123,
                                    do.progress = T)
 
@@ -145,8 +135,8 @@ em_proj <- BIOMOD_EnsembleForecasting(bm.em = mods_em,
                                       proj.name = 'religiosa_namerica_5km',
                                       new.env = envs,
                                       models.chosen = 'all',
-                                      metric.binary = c('TSS'),
-                                      metric.filter = c('TSS'))
+                                      metric.binary = NULL,
+                                      metric.filter = NULL)
 
 ### project to Europe
 # load Europe envs layers
@@ -159,8 +149,8 @@ em_proj_eu <- BIOMOD_EnsembleForecasting(bm.em = mods_em,
                                          proj.name = 'religiosa_namerica2eu_5km',
                                          new.env = envs_eu,
                                          models.chosen = 'all',
-                                         metric.binary = c('TSS'),
-                                         metric.filter = c('TSS'))
+                                         metric.binary = NULL,
+                                         metric.filter = NULL)
 
 ### project globally
 # load global layers
@@ -173,5 +163,5 @@ em_proj_glob <- BIOMOD_EnsembleForecasting(bm.em = mods_em,
                                            proj.name = 'religiosa_namerica2glob_5km',
                                            new.env = envs_glob,
                                            models.chosen = 'all',
-                                           metric.binary = c('TSS'),
-                                           metric.filter = c('TSS'))
+                                           metric.binary = NULL,
+                                           metric.filter = NULL)
