@@ -23,7 +23,7 @@ sessionInfo()
 options(maxent.jar = '/home/yshin/mendel-nas1/religiosa_nsdm_HPC/maxent.jar')
 
 # set output directory
-out.dir <- '/home/yshin/mendel-nas1/religiosa_nsdm_HPC/models_run/europe_5km/output'
+out.dir <- '/home/yshin/mendel-nas1/religiosa_nsdm_HPC/models_run/europe_10km/output'
 
 # set up multicore processing
 plan(multisession, workers = 28)    # specify number of cores
@@ -123,7 +123,7 @@ print(mods_single_tn)
 
 # get evaluation
 single_mods_eval_metrics <- get_evaluations(mods_single_tn)
-write.csv(single_mods_eval_metrics, '/home/yshin/mendel-nas1/religiosa_nsdm_HPC/models_run/europe_5km/output/single_mods_eval_metrics.csv')
+write.csv(single_mods_eval_metrics, '/home/yshin/mendel-nas1/religiosa_nsdm_HPC/models_run/europe_10km/output/single_mods_eval_metrics.csv')
 
 
 #####  part 3. run ensemble models ---------------
@@ -142,14 +142,13 @@ print(mods_em)
 
 # get evaluation
 em_eval_metrics <- get_evaluations(mods_em)
-write.csv(em_eval_metrics, '/home/yshin/mendel-nas1/religiosa_nsdm_HPC/models_run/europe_5km/output/em_eval_metrics.csv')
-
+write.csv(em_eval_metrics, '/home/yshin/mendel-nas1/religiosa_nsdm_HPC/models_run/europe_10km/output/em_eval_metrics.csv')
 
 #####  part 5. projection ---------------
 ### project ensemble models to the current envs
 em_proj <- BIOMOD_EnsembleForecasting(bm.em = mods_em,
                                       bm.proj = NULL,
-                                      proj.name = 'religiosa_europe_5km',
+                                      proj.name = 'religiosa_europe_10km',
                                       new.env = envs,
                                       models.chosen = 'all',
                                       metric.binary = NULL,
@@ -161,11 +160,14 @@ em_proj <- BIOMOD_EnsembleForecasting(bm.em = mods_em,
 envs_na <- rast(list.files(path = '/home/yshin/mendel-nas1/religiosa_nsdm_HPC/models_run/input/data/envs/north_america', pattern = '.tif$', full.names = T))
 envs_na <- envs_na[[c('bio1', 'bio2', 'bio12', 'bio15', 'cropland', 'elev', 'grassland', 'human_footprint', 'trees')]]
 
+# resample North America rasters to 10km resolution (fact = 2)
+envs_na <- terra::aggregate(envs_na, fact = 2)
+print(envs_na)
 
 # project
 em_proj_na <- BIOMOD_EnsembleForecasting(bm.em = mods_em,
                                          bm.proj = NULL,
-                                         proj.name = 'religiosa_europe2na_5km',
+                                         proj.name = 'religiosa_europe2na_10km',
                                          new.env = envs_na,
                                          models.chosen = 'all',
                                          metric.binary = NULL,
@@ -177,10 +179,14 @@ em_proj_na <- BIOMOD_EnsembleForecasting(bm.em = mods_em,
 envs_glob <- rast(list.files(path = '/home/yshin/mendel-nas1/religiosa_nsdm_HPC/models_run/input/data/envs/global/allvars_global_processed', pattern = '.tif$', full.names = T))
 envs_glob <- envs_glob[[c('bio1', 'bio2', 'bio12', 'bio15', 'cropland', 'elev', 'grassland', 'human_footprint', 'trees')]]
 
+# resample global rasters to 10km resolution (fact = 2)
+envs_glob <- terra::aggregate(envs_glob, fact = 2)
+print(envs_glob)
+
 # project
 em_proj_glob <- BIOMOD_EnsembleForecasting(bm.em = mods_em,
                                            bm.proj = NULL,
-                                           proj.name = 'religiosa_europe2glob_5km',
+                                           proj.name = 'religiosa_europe2glob_10km',
                                            new.env = envs_glob,
                                            models.chosen = 'all',
                                            metric.binary = NULL,
