@@ -22,6 +22,12 @@ sessionInfo()
 # specify maxent.jar path
 options(maxent.jar = '/home/yshin/mendel-nas1/religiosa_nsdm_HPC/maxent.jar')
 
+# set output directory
+out.dir <- '/home/yshin/mendel-nas1/religiosa_nsdm_HPC/models_run/namerica_10km/output'
+
+# set up multicore processing
+plan(multisession, workers = 28)    # specify number of cores
+
 
 #####  part 1. prep data ---------------
 # load environmental variables
@@ -59,7 +65,7 @@ pts <- rbind(occs, bg)                 # bind
 bm_data <- BIOMOD_FormatingData(resp.name = 'Mantis religiosa_namerica',
                                 resp.var = vect(pts, geom = c('long', 'lat'), crs = 'EPSG:4326'),
                                 expl.var = envs,
-                                dir.name = '/home/yshin/mendel-nas1/religiosa_nsdm_HPC/models_run/namerica_5km/output',
+                                dir.name = '/home/yshin/mendel-nas1/religiosa_nsdm_HPC/models_run/namerica_10km/output',
                                 PA.nb.rep = 3,
                                 PA.nb.absences = nrow(occs)*10,
                                 PA.strategy = 'random',
@@ -106,7 +112,7 @@ print(mods_single_tn)
 
 # get evaluation
 single_mods_eval_metrics <- get_evaluations(mods_single_tn)
-write.csv(single_mods_eval_metrics, '/home/yshin/mendel-nas1/religiosa_nsdm_HPC/models_run/namerica_5km/output/single_mods_eval_metrics.csv')
+write.csv(single_mods_eval_metrics, '/home/yshin/mendel-nas1/religiosa_nsdm_HPC/models_run/namerica_10km/output/single_mods_eval_metrics.csv')
 
 
 #####  part 3. run ensemble models ---------------
@@ -125,14 +131,14 @@ print(mods_em)
 
 # get evaluation
 em_eval_metrics <- get_evaluations(mods_em)
-write.csv(em_eval_metrics, '/home/yshin/mendel-nas1/religiosa_nsdm_HPC/models_run/namerica_5km/output/em_eval_metrics.csv')
+write.csv(em_eval_metrics, '/home/yshin/mendel-nas1/religiosa_nsdm_HPC/models_run/namerica_10km/output/em_eval_metrics.csv')
 
 
 #####  part 5. projection ---------------
 ### project ensemble models to the current envs
 em_proj <- BIOMOD_EnsembleForecasting(bm.em = mods_em,
                                       bm.proj = NULL,
-                                      proj.name = 'religiosa_namerica_5km',
+                                      proj.name = 'religiosa_namerica_10km',
                                       new.env = envs,
                                       models.chosen = 'all',
                                       metric.binary = NULL,
@@ -143,10 +149,14 @@ em_proj <- BIOMOD_EnsembleForecasting(bm.em = mods_em,
 envs_eu <- rast(list.files(path = '/home/yshin/mendel-nas1/religiosa_nsdm_HPC/models_run/input/data/envs/europe', pattern = '.tif$', full.names = T))
 envs_eu <- envs_eu[[c('bio1', 'bio2', 'bio12', 'bio15', 'cropland', 'elev', 'grassland', 'human_footprint', 'trees')]]
 
+# resample to 10km resolution (fact = 2)
+envs_eu <- terra::aggregate(envs_eu, fact = 2)
+print(envs_eu)
+
 # project
 em_proj_eu <- BIOMOD_EnsembleForecasting(bm.em = mods_em,
                                          bm.proj = NULL,
-                                         proj.name = 'religiosa_namerica2eu_5km',
+                                         proj.name = 'religiosa_namerica2eu_10km',
                                          new.env = envs_eu,
                                          models.chosen = 'all',
                                          metric.binary = NULL,
@@ -157,10 +167,14 @@ em_proj_eu <- BIOMOD_EnsembleForecasting(bm.em = mods_em,
 envs_glob <- rast(list.files(path = '/home/yshin/mendel-nas1/religiosa_nsdm_HPC/models_run/input/data/envs/global/allvars_global_processed', pattern = '.tif$', full.names = T))
 envs_glob <- envs_glob[[c('bio1', 'bio2', 'bio12', 'bio15', 'cropland', 'elev', 'grassland', 'human_footprint', 'trees')]]
 
+# resample global rasters to 10km resolution (fact = 2)
+envs_glob <- terra::aggregate(envs_glob, fact = 2)
+print(envs_glob)
+
 # project
 em_proj_glob <- BIOMOD_EnsembleForecasting(bm.em = mods_em,
                                            bm.proj = NULL,
-                                           proj.name = 'religiosa_namerica2glob_5km',
+                                           proj.name = 'religiosa_namerica2glob_10km',
                                            new.env = envs_glob,
                                            models.chosen = 'all',
                                            metric.binary = NULL,
