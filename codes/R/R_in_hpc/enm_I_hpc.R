@@ -10,6 +10,7 @@ gc()
 set.seed(1234)
 
 # load packages
+library(future)       # for parallel processing
 library(terra)
 library(sf)
 library(SDMtune)
