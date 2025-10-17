@@ -24,9 +24,9 @@ Mendel HPC at AMNH
 - tidyterra
 
 ## Software and package dependencies (HPC runs)
-R (v 4.3.3)
-biomod2
-SDMtune
+- R (v 4.3.3)
+- biomod2
+- SDMtune
 
 ## Study background
 
