@@ -1,4 +1,4 @@
-# Ecological niche modeling of the European mantis (*Mantis religiosa*)
+# Ensemble ecological niche modeling of the European mantis (*Mantis religiosa*)
 
 ## Overall workflow
 <img width="1416" height="581" alt="workflow" src="https://github.com/user-attachments/assets/49a2bcac-e98f-499a-bd3c-f7b1eaf1de06" />
