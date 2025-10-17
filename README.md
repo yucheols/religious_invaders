@@ -1,10 +1,10 @@
 # religious_invaders
 
 ## Overall workflow
+<img width="1416" height="581" alt="workflow" src="https://github.com/user-attachments/assets/49a2bcac-e98f-499a-bd3c-f7b1eaf1de06" />
 
 ## Computing resources
 Mendel HPC at AMNH
-<img width="1416" height="581" alt="workflow" src="https://github.com/user-attachments/assets/49a2bcac-e98f-499a-bd3c-f7b1eaf1de06" />
 
 ## Software and package dependencies for local runs
 - R (v 4.4.2) for local runs
