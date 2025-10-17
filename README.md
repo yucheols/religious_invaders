@@ -26,7 +26,11 @@ Mendel HPC at AMNH
 ## Software and package dependencies (HPC runs)
 - R (v 4.3.3)
 - biomod2
+- dplyr
+- future
+- sf
 - SDMtune
+- terra
 
 ## Study background
 
