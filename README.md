@@ -1,21 +1,21 @@
-# religious_invaders
+# Ensemble ecological niche modeling of the European mantis (*Mantis religiosa*)
+
+## Overall workflow
+<img width="1416" height="581" alt="workflow" src="https://github.com/user-attachments/assets/49a2bcac-e98f-499a-bd3c-f7b1eaf1de06" />
 
 ## Computing resources
 Mendel HPC at AMNH
 
-## Software and package dependencies for local runs
-- R (v 4.4.2) for local runs
-- blockCV
+## Software and package dependencies (local runs)
+- R (v 4.4.2)
+- biomod2
 - ClimDatDownloadR
-- dismo
 - dplyr
 - ENMTools
 - ENMwrap
 - factoextra
-- foster
 - geodata
 - ggplot2
-- ggpubr
 - ntbox
 - rnaturalearth
 - SDMtune
@@ -23,8 +23,14 @@ Mendel HPC at AMNH
 - terra
 - tidyterra
 
-## Software and package dependencies for HPC runs
-R (v 4.3.3)
+## Software and package dependencies (HPC runs)
+- R (v 4.3.3)
+- biomod2
+- dplyr
+- future
+- sf
+- SDMtune
+- terra
 
 ## Study background
 
@@ -36,4 +42,4 @@ R (v 4.3.3)
 - Script "enm_I_alldata": The "invaded range" ENMs fitted with all available invaded range occurrence points and spatial extents.
 - Script "enm_I_constrained": Two "invaded range" ENMs, one fitted on the "East" data and another fitted on the "West" data.
 
-## Niche overlap/divergence analysis
+## Niche overlap/divergence/shift analysis
